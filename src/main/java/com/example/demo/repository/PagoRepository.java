@@ -16,4 +16,7 @@ public interface PagoRepository extends JpaRepository<Pago, Integer>{
 	
 	@Query(nativeQuery = true,value = " SELECT SUM(producto.valor) FROM pago INNER JOIN producto ON pago.id_producto = producto.id_producto WHERE pago.id_usuario = ?")
     long valor(long valor);
+	
+	@Query(nativeQuery = true,value = "SELECT SUM(producto.valor)FROM pago INNER JOIN producto ON pago.id_producto = producto.id_producto WHERE pago.fecha =?")
+	long fecha(String fecha);
 }

@@ -36,21 +36,28 @@ public class PagoControler {
 	public Map<String, Object> agregar(@RequestBody PagoDTO pagoDTO) {
 		Optional<Usuario>usuario=usuarioRepository.findById(pagoDTO.getUsuario());
 		Optional<Producto>producto=productoRepository.findById(pagoDTO.getProducto());
-		long monto=pagoRepository.valor(usuario.get().getIdUsuario());
-		long valor=Long.parseLong(producto.get().getValor());		
 		
+		long monto=pagoRepository.valor(usuario.get().getIdUsuario());
+		long valor=Long.parseLong(producto.get().getValor());
+		long valorFecha= pagoRepository.fecha(pagoDTO.getFecha());
+		
+		System.err.println("datoss---->"+valorFecha);
 		if(usuario.isPresent()) {
-			if(10000000>monto+valor) {				
-				Pago pago=new Pago(producto.get(),usuario.get(),pagoDTO.getCuotas(),pagoDTO.getFecha(),pagoDTO.getEstado());
-				pagoRepository.save(pago);
-				System.err.println("datoss---->"+pago);
-				return Ultis.mapear(true, "Registro exitoso", pago);
+			if(10000000>monto+valor) {
+				if(5000000>monto+valorFecha) {
+					Pago pago=new Pago(producto.get(),usuario.get(),pagoDTO.getCuotas(),pagoDTO.getFecha(),pagoDTO.getEstado());
+					pagoRepository.save(pago);
+					System.err.println("datoss---->"+pago);
+					return Ultis.mapear(true, "Registro exitoso", pago);
+				}else {
+					return Ultis.mapear(false, "valor maximo por dia superado", null);
+				}
+				
+			
 			}else {
 				return Ultis.mapear(false, "valor superado", null);
 			}
-				
-				
-			
+	
 			
 		}
 		
